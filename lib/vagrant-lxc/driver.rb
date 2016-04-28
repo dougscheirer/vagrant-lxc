@@ -201,6 +201,8 @@ module Vagrant
         @logger.info "Removing bridge #{bridge_name}"
         @sudo_wrapper.run('ip', 'link', 'set', bridge_name, 'down')
         @sudo_wrapper.run('brctl', 'delbr', bridge_name)
+        # for LXC hosts, we launch a dnsmasq to manage DHCP.  kill that.
+        @sudo_wrapper.run('scripts/br-bind-dnsmasq.sh',bridge_name,'delete')
       end
 
       def version

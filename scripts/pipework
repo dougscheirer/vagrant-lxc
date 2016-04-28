@@ -265,6 +265,8 @@ then
     [ $DHCP_CLIENT = "udhcpc"  ] && ip netns exec $NSPID $DHCP_CLIENT -qi $CONTAINER_IFNAME -x hostname:$GUESTNAME
     if [ $DHCP_CLIENT = "dhclient"  ]
     then
+        # make sure that DHCP services are available via dnsmasq
+        scripts/br-bind-dnsmasq.sh $IFNAME
         # kill dhclient after get ip address to prevent device be used after container close
         ip netns exec $NSPID $DHCP_CLIENT -pf "/var/run/dhclient.$NSPID.pid" $CONTAINER_IFNAME
         kill "$(cat "/var/run/dhclient.$NSPID.pid")"
